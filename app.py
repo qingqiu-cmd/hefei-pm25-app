@@ -188,29 +188,29 @@ with st.sidebar:
 # ===================== 主界面 =====================
 df = st.session_state.df
 
-st.subheader("📈 合肥市 PM2.5 历史趋势")
+st.subheader("📈 Historical PM2.5 Trend in Hefei")
 fig, ax = plt.subplots(figsize=(8, 3))
 ax.plot(df.index, df['PM2.5'], color='darkgreen', linewidth=1)
-ax.axvline(x=df.index[-1], color='red', linestyle='--', label=f'最新数据 {df.index[-1].strftime("%Y-%m")}')
+ax.axvline(x=df.index[-1], color='red', linestyle='--', label=f'Latest Data: {df.index[-1].strftime("%Y-%m")}')
 ax.set_ylabel('PM2.5 (μg/m³)')
 ax.legend()
 ax.grid(alpha=0.3)
 st.pyplot(fig)
 
-st.subheader("🔮 下月预测")
+st.subheader("🔮 Next Month Prediction")
 pred, p_year, p_month = make_prediction(df)
 col1, col2, col3 = st.columns(3)
-col1.metric("📅 预测月份", f"{p_year}年{p_month}月")
-col2.metric("🌁 预测 PM2.5", f"{pred:.1f} μg/m³")
+col1.metric("📅 Prediction Month", f"{p_year}-{p_month:02d}")
+col2.metric("🌁 Predicted PM2.5", f"{pred:.1f} μg/m³")
 if pred < 35:
-    level, color = "优", "green"
+    level, color = "Good", "green"
 elif pred < 75:
-    level, color = "良", "orange"
+    level, color = "Moderate", "orange"
 else:
-    level, color = "轻度污染及以上", "red"
-col3.markdown(f"<h4 style='color:{color};'>空气质量等级：{level}</h4>", unsafe_allow_html=True)
+    level, color = "Unhealthy", "red"
+col3.markdown(f"<h4 style='color:{color};'>Air Quality: {level}</h4>", unsafe_allow_html=True)
 
-st.subheader("🔍 特征重要性 Top10")
+st.subheader("🔍 Top 10 Feature Importances")
 if hasattr(model, 'feature_importances_'):
     importances = model.feature_importances_
     indices = np.argsort(importances)[-10:]
@@ -219,7 +219,7 @@ if hasattr(model, 'feature_importances_'):
     ax2.set_yticks(range(len(indices)))
     ax2.set_yticklabels([feat_cols[i] for i in indices])
     ax2.set_xlabel('Importance')
-    ax2.set_title('XGBoost 特征重要性')
+    ax2.set_title('XGBoost Feature Importance')
     st.pyplot(fig2)
 
 st.markdown("---")
